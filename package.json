@@ -1,0 +1,25 @@
+{
+  "name": "inadimplencia",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "live-server --port=5173 --no-browser",
+    "dev": "live-server --port=5173"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RafaelSanchesGarcia/Inadimplencia.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/RafaelSanchesGarcia/Inadimplencia/issues"
+  },
+  "homepage": "https://github.com/RafaelSanchesGarcia/Inadimplencia#readme",
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  }
+}
