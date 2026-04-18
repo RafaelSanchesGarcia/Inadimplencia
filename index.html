@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Inadimplência — Protocolos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f8fa;
+    --surface: #ffffff;
+    --border: #e5e7eb;
+    --text: #0f172a;
+    --text-muted: #64748b;
+    --primary: #ff5a1f;
+    --primary-hover: #e84a10;
+    --success-bg: #dcfce7; --success-fg: #166534;
+    --warning-bg: #fef9c3; --warning-fg: #854d0e;
+    --danger-bg:  #fee2e2; --danger-fg:  #991b1b;
+    --info-bg:    #dbeafe; --info-fg:    #1e40af;
+    --radius: 12px;
+    --shadow: 0 1px 2px rgba(16,24,40,.04), 0 1px 3px rgba(16,24,40,.06);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+  header h1 { font-size: 24px; font-weight: 700; margin: 0 0 4px; letter-spacing: -0.01em; }
+  header p  { color: var(--text-muted); margin: 0 0 24px; font-size: 14px; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .toolbar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 20px; border-bottom: 1px solid var(--border); gap: 12px;
+  }
+  .search {
+    position: relative; flex: 1; max-width: 420px;
+  }
+  .search input {
+    width: 100%; padding: 10px 14px 10px 38px;
+    border: 1px solid var(--border); border-radius: 8px;
+    font: inherit; font-size: 14px; background: var(--bg);
+    transition: border .15s, box-shadow .15s;
+  }
+  .search input:focus {
+    outline: none; border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(255,90,31,.15); background: #fff;
+  }
+  .search svg {
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    color: var(--text-muted);
+  }
+  .count { font-size: 13px; color: var(--text-muted); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  thead th {
+    text-align: left; padding: 12px 20px;
+    font-weight: 600; font-size: 12px; text-transform: uppercase;
+    letter-spacing: 0.04em; color: var(--text-muted);
+    background: #fafbfc; border-bottom: 1px solid var(--border);
+  }
+  tbody td { padding: 14px 20px; border-bottom: 1px solid var(--border); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: #fafbfc; }
+  .protocolo { font-variant-numeric: tabular-nums; font-weight: 500; color: var(--primary); }
+
+  .badge {
+    display: inline-block; padding: 4px 10px; border-radius: 999px;
+    font-size: 12px; font-weight: 500;
+  }
+  .badge.aberto     { background: var(--info-bg);    color: var(--info-fg); }
+  .badge.pendente   { background: var(--warning-bg); color: var(--warning-fg); }
+  .badge.resolvido  { background: var(--success-bg); color: var(--success-fg); }
+  .badge.cancelado  { background: var(--danger-bg);  color: var(--danger-fg); }
+
+  .pagination {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 20px; border-top: 1px solid var(--border);
+  }
+  .page-info { font-size: 13px; color: var(--text-muted); }
+  .page-controls { display: flex; gap: 6px; }
+  .page-btn {
+    min-width: 34px; height: 34px; padding: 0 10px;
+    border: 1px solid var(--border); background: #fff; border-radius: 8px;
+    font: inherit; font-size: 13px; cursor: pointer; color: var(--text);
+    transition: all .15s;
+  }
+  .page-btn:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); }
+  .page-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+  .page-btn:disabled { opacity: .4; cursor: not-allowed; }
+  .empty { padding: 40px; text-align: center; color: var(--text-muted); font-size: 14px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Protocolos de Inadimplência</h1>
+    <p>Acompanhe o status e a última atualização de cada protocolo.</p>
+  </header>
+
+  <div class="card">
+    <div class="toolbar">
+      <div class="search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="searchInput" type="text" placeholder="Pesquisar em todos os campos..." />
+      </div>
+      <span class="count" id="count">0 resultados</span>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Protocolo</th>
+          <th>Cliente</th>
+          <th>Status</th>
+          <th>Dt. Últ. Atualização</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+
+    <div class="pagination">
+      <span class="page-info" id="pageInfo"></span>
+      <div class="page-controls" id="pageControls"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const data = [
+    { protocolo: '2026-00142', cliente: 'Comércio Silva Ltda',       status: 'Aberto',    atualizacao: '2026-04-17 14:22' },
+    { protocolo: '2026-00141', cliente: 'Maria Aparecida Souza',     status: 'Pendente',  atualizacao: '2026-04-17 10:05' },
+    { protocolo: '2026-00140', cliente: 'João Pereira ME',           status: 'Resolvido', atualizacao: '2026-04-16 18:41' },
+    { protocolo: '2026-00139', cliente: 'Transportes Aurora S.A.',   status: 'Aberto',    atualizacao: '2026-04-16 09:12' },
+    { protocolo: '2026-00138', cliente: 'Carlos Eduardo Ribeiro',    status: 'Cancelado', atualizacao: '2026-04-15 17:30' },
+    { protocolo: '2026-00137', cliente: 'Padaria Pão Dourado',       status: 'Pendente',  atualizacao: '2026-04-15 11:47' },
+    { protocolo: '2026-00136', cliente: 'Fernanda Lima Arquitetura', status: 'Resolvido', atualizacao: '2026-04-14 16:08' },
+    { protocolo: '2026-00135', cliente: 'Auto Peças Veloz',          status: 'Aberto',    atualizacao: '2026-04-14 08:55' },
+    { protocolo: '2026-00134', cliente: 'Ricardo Mendes',            status: 'Pendente',  atualizacao: '2026-04-13 19:20' },
+    { protocolo: '2026-00133', cliente: 'Clínica Vida Saudável',     status: 'Resolvido', atualizacao: '2026-04-13 13:14' },
+    { protocolo: '2026-00132', cliente: 'Mercado Central Ltda',      status: 'Aberto',    atualizacao: '2026-04-12 10:33' },
+    { protocolo: '2026-00131', cliente: 'Ana Beatriz Rocha',         status: 'Cancelado', atualizacao: '2026-04-12 09:02' },
+    { protocolo: '2026-00130', cliente: 'Construtora Horizonte',     status: 'Pendente',  atualizacao: '2026-04-11 15:58' },
+    { protocolo: '2026-00129', cliente: 'Livraria Saber & Cia',      status: 'Resolvido', atualizacao: '2026-04-11 11:40' },
+    { protocolo: '2026-00128', cliente: 'Oficina Turbo Motor',       status: 'Aberto',    atualizacao: '2026-04-10 17:25' },
+    { protocolo: '2026-00127', cliente: 'Paulo Henrique Costa',      status: 'Pendente',  atualizacao: '2026-04-10 08:17' },
+    { protocolo: '2026-00126', cliente: 'Restaurante Sabor Mineiro', status: 'Resolvido', atualizacao: '2026-04-09 20:03' },
+    { protocolo: '2026-00125', cliente: 'Tech Solutions BR',         status: 'Aberto',    atualizacao: '2026-04-09 14:49' },
+    { protocolo: '2026-00124', cliente: 'Juliana Moreira',           status: 'Cancelado', atualizacao: '2026-04-08 10:22' },
+    { protocolo: '2026-00123', cliente: 'Farmácia BemEstar',         status: 'Pendente',  atualizacao: '2026-04-08 09:11' },
+    { protocolo: '2026-00122', cliente: 'Gráfica Impressão Rápida',  status: 'Resolvido', atualizacao: '2026-04-07 16:37' },
+    { protocolo: '2026-00121', cliente: 'Bruno Alves Consultoria',   status: 'Aberto',    atualizacao: '2026-04-07 13:05' },
+    { protocolo: '2026-00120', cliente: 'Supermercado Família',      status: 'Pendente',  atualizacao: '2026-04-06 18:28' },
+    { protocolo: '2026-00119', cliente: 'Escola Aprender +',         status: 'Resolvido', atualizacao: '2026-04-06 10:14' },
+    { protocolo: '2026-00118', cliente: 'Posto São Jorge',           status: 'Aberto',    atualizacao: '2026-04-05 15:50' },
+  ];
+
+  const PAGE_SIZE = 10;
+  let currentPage = 1;
+  let filtered = [...data];
+
+  const tbody       = document.getElementById('tbody');
+  const pageInfo    = document.getElementById('pageInfo');
+  const pageControls= document.getElementById('pageControls');
+  const count       = document.getElementById('count');
+  const searchInput = document.getElementById('searchInput');
+
+  function render() {
+    count.textContent = `${filtered.length} resultado${filtered.length !== 1 ? 's' : ''}`;
+
+    const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+    if (currentPage > totalPages) currentPage = totalPages;
+
+    const start = (currentPage - 1) * PAGE_SIZE;
+    const rows  = filtered.slice(start, start + PAGE_SIZE);
+
+    tbody.innerHTML = rows.length === 0
+      ? `<tr><td colspan="4" class="empty">Nenhum resultado encontrado.</td></tr>`
+      : rows.map(r => `
+        <tr>
+          <td class="protocolo">${r.protocolo}</td>
+          <td>${r.cliente}</td>
+          <td><span class="badge ${r.status.toLowerCase()}">${r.status}</span></td>
+          <td>${formatDate(r.atualizacao)}</td>
+        </tr>
+      `).join('');
+
+    const from = filtered.length === 0 ? 0 : start + 1;
+    const to   = Math.min(start + PAGE_SIZE, filtered.length);
+    pageInfo.textContent = `Mostrando ${from}–${to} de ${filtered.length}`;
+
+    renderPagination(totalPages);
+  }
+
+  function renderPagination(totalPages) {
+    const btns = [];
+    btns.push(`<button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} data-page="${currentPage - 1}">‹</button>`);
+    for (let i = 1; i <= totalPages; i++) {
+      btns.push(`<button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`);
+    }
+    btns.push(`<button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} data-page="${currentPage + 1}">›</button>`);
+    pageControls.innerHTML = btns.join('');
+    pageControls.querySelectorAll('.page-btn').forEach(b => {
+      b.addEventListener('click', () => { currentPage = +b.dataset.page; render(); });
+    });
+  }
+
+  function formatDate(iso) {
+    const [d, t] = iso.split(' ');
+    const [y, m, day] = d.split('-');
+    return `${day}/${m}/${y} ${t}`;
+  }
+
+  searchInput.addEventListener('input', e => {
+    const q = e.target.value.trim().toLowerCase();
+    filtered = !q ? [...data] : data.filter(r =>
+      Object.values(r).some(v => String(v).toLowerCase().includes(q))
+    );
+    currentPage = 1;
+    render();
+  });
+
+  render();
+</script>
+</body>
+</html>
