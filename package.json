@@ -2,10 +2,10 @@
   "name": "inadimplencia",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "private": true,
   "scripts": {
-    "start": "live-server --port=5173 --no-browser",
-    "dev": "live-server --port=5173"
+    "serve": "vercel dev --listen 5173",
+    "serve:static": "live-server --port=5173"
   },
   "repository": {
     "type": "git",
@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/RafaelSanchesGarcia/Inadimplencia#readme",
   "devDependencies": {
-    "live-server": "^1.2.2"
+    "live-server": "^1.2.2",
+    "vercel": "^51.7.0"
   }
 }
